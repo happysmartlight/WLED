@@ -1,23 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-	<meta charset="utf-8">
-	<title>PIN required</title>
-	<script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yêu cầu mã PIN</title>
+    <script>
 		var d = document;
 		function B() { window.open("../settings","_self"); }
 	</script>
-	<style>
-		@import url("style.css");
-	</style>
+    <style>
+        /* RESET */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+            background: linear-gradient(135deg, #111 0%, #222 100%);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        form {
+            background: rgba(0,0,0,0.7);
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255,0,255,0.3), 0 0 30px rgba(0,255,255,0.3);
+            width: 100%;
+            max-width: 360px;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            color: #ff77aa;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2rem;
+            border: 2px solid #555;
+            border-radius: 10px;
+            background: #222;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="password"]:focus {
+            border-color: #ff33cc;
+            box-shadow: 0 0 10px #ff33cc;
+            outline: none;
+        }
+
+        button {
+            width: 48%;
+            padding: 12px;
+            margin: 5px 1%;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(90deg, #ff33cc, #33ccff);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 0 15px rgba(255,0,255,0.5), 0 0 15px rgba(0,255,255,0.5);
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #444;
+            margin: 15px 0;
+        }
+
+        @media(max-width: 400px){
+            form { padding: 30px 20px; }
+            input[type="password"] { font-size: 1rem; padding: 10px; }
+            button { font-size: 0.9rem; padding: 10px; }
+        }
+    </style>
 </head>
 <body onload="d.getElementsByName('PIN')[0].focus()">
-	<form id="form_s" name="Sf" method="post">
-		<h2>Please enter settings PIN code</h2>
-		<input type="password" name="PIN" size="4" maxlength="4" minlength="4" pattern="[0-9]*" inputmode="numeric" autofocus>
-		<hr>
-		<button type="button" onclick="B()">Back</button><button type="submit">Submit</button>
-	</form>
+    <form id="form_s" name="Sf" method="post">
+        <h2>Nhập mã PIN</h2>
+        <input type="password" name="PIN" size="4" maxlength="4" minlength="4" pattern="[0-9]*" inputmode="numeric" autofocus placeholder="••••">
+        <hr>
+        <button type="button" onclick="B()">Quay lại</button>
+        <button type="submit">Gửi xác minh</button>
+    </form>
 </body>
 </html>

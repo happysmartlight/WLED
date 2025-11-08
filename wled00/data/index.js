@@ -27,7 +27,7 @@ var lastinfo = {};
 var isM = false, mw = 0, mh=0;
 var ws, wsRpt=0;
 var cfg = {
-	theme:{base:"dark", bg:{url:"", rnd: false, rndGrayscale: false, rndBlur: false}, alpha:{bg:0.6,tab:0.8}, color:{bg:""}},
+	theme:{base:"dark", bg:{url:"https://raw.githubusercontent.com/happysmartlight/happysmartlight.github.io/refs/heads/master/img/controller-chip/ARGB_HSL_4.png", rnd: false, rndGrayscale: false, rndBlur: false}, alpha:{bg:0.3,tab:0.8}, color:{bg:""}},
 	comp :{colors:{picker: true, rgb: false, quick: true, hex: false},
 		  labels:true, pcmbot:false, pid:true, seglen:false, segpwr:false, segexp:false,
 		  css:true, hdays:false, fxdef:true, on:0, off:0, idsort: false}
@@ -225,7 +225,7 @@ function onLoad()
 		loc = true;
 		locip = localStorage.getItem('locIp');
 		if (!locip) {
-			locip = prompt("File Mode. Please enter WLED IP!");
+			locip = prompt("File Mode. Please enter ARGB IP!");
 			localStorage.setItem('locIp', locip);
 		}
 	} else {
@@ -437,7 +437,7 @@ function cpBck()
 	copyText.select();
 	copyText.setSelectionRange(0, 999999);
 	d.execCommand("copy");
-	showToast("Copied to clipboard!");
+	showToast("Sao chép vào clipboard!");
 }
 
 function presetError(empty)
@@ -450,18 +450,18 @@ function presetError(empty)
 
 	var cn = `<div class="pres c" style="padding:8px;margin-bottom:8px;${empty?'':'cursor:pointer;'}" ${empty?'':'onclick="pmtLast=0;loadPresets();"'}>`;
 	if (empty)
-		cn += `You have no presets yet!`;
+		cn += `Bạn chưa có preset nào!`;
 	else
-		cn += `Sorry, there was an issue loading your presets!`;
+		cn += `Xin lỗi, đã xảy ra sự cố khi tải preset của bạn!`;
 
 	if (hasBackup) {
 		cn += `<br><br>`;
 		if (empty)
-			cn += `However, there is backup preset data of a previous installation available.<br>(Saving a preset will hide this and overwrite the backup)`;
+			cn += `Tuy nhiên, có dữ liệu preset sao lưu của một cài đặt trước đó có sẵn.<br>(Lưu một preset sẽ ẩn điều này và ghi đè lên bản sao lưu)`;
 		else
-			cn += `Here is a backup of the last known good state:`;
-		cn += `<textarea id="bck"></textarea><br><button class="btn" style="margin-top:12px;" onclick="cpBck()">Copy to clipboard</button>`;
-		cn += `<br><button type="button" class="btn" style="margin-top:12px;" onclick="restore(gId('bck').value)">Restore</button>`;
+			cn += `Đây là bản sao lưu của trạng thái tốt nhất được biết đến:`;
+		cn += `<textarea id="bck"></textarea><br><button class="btn" style="margin-top:12px;" onclick="cpBck()">Sao chép vào clipboard</button>`;
+		cn += `<br><button type="button" class="btn" style="margin-top:12px;" onclick="restore(gId('bck').value)">Khôi phục</button>`;
 	}
 	cn += `</div>`;
 	gId('pcont').innerHTML = cn;
@@ -727,23 +727,18 @@ function populateInfo(i)
 	var vcn = "Kuuhaku";
 	if (i.cn) vcn = i.cn;
 
-	cn += `v${i.ver} "${vcn}"<br><br><table>
+	cn += `v${i.ver} ${vcn}<br><br><table>
 ${urows}
 ${urows===""?'':'<tr><td colspan=2><hr style="height:1px;border-width:0;color:gray;background-color:gray"></td></tr>'}
 ${i.opt&0x100?inforow("Debug","<button class=\"btn btn-xs\" onclick=\"requestJson({'debug':"+(i.opt&0x0080?"false":"true")+"});\"><i class=\"icons "+(i.opt&0x0080?"on":"off")+"\">&#xe08f;</i></button>"):''}
-${inforow("Build",i.vid)}
-${inforow("Signal strength",i.wifi.signal +"% ("+ i.wifi.rssi, " dBm)")}
-${inforow("Uptime",getRuntimeStr(i.uptime))}
-${inforow("Time",i.time)}
-${inforow("Free heap",(i.freeheap/1024).toFixed(1)," kB")}
-${i.psram?inforow("Free PSRAM",(i.psram/1024).toFixed(1)," kB"):""}
-${inforow("Estimated current",pwru)}
-${inforow("Average FPS",i.leds.fps)}
+${inforow("Mã bản dựng",i.vid)}
+${inforow("Tín hiệu sóng",i.wifi.signal +"% ("+ i.wifi.rssi, " dBm)")}
+${inforow("Đã hoạt động liên tục",getRuntimeStr(i.uptime))}
+${inforow("Thời gian thực",i.time)}
+${inforow("Ước tính dòng",pwru)}
+${inforow("Tốc độ FPS",i.leds.fps)}
 ${inforow("MAC address",i.mac)}
-${inforow("CPU clock",i.clock," MHz")}
-${inforow("Flash size",i.flash," MB")}
-${inforow("Filesystem",i.fs.u + "/" + i.fs.t + " kB (" +Math.round(i.fs.u*100/i.fs.t) + "%)")}
-${inforow("Environment",i.arch + " " + i.core + " (" + i.lwip + ")")}
+${inforow("Địa chỉ IP",i.ip)}
 </table>`;
 	gId('kv').innerHTML = cn;
 	//  update all sliders in Info
@@ -799,31 +794,31 @@ function populateSegments(s)
 		}
 		let map2D = `<div id="seg${i}map2D" data-map="map2D" class="lbl-s hide">Expand 1D FX<br>`+
 						`<div class="sel-p"><select class="sel-p" id="seg${i}m12" onchange="setM12(${i})">`+
-							`<option value="0" ${inst.m12==0?' selected':''}>Pixels</option>`+
-							`<option value="1" ${inst.m12==1?' selected':''}>Bar</option>`+
-							`<option value="2" ${inst.m12==2?' selected':''}>Arc</option>`+
-							`<option value="3" ${inst.m12==3?' selected':''}>Corner</option>`+
-							`<option value="4" ${inst.m12==4?' selected':''}>Pinwheel</option>`+
+							`<option value="0" ${inst.m12==0?' selected':''}>Điểm ảnh</option>`+
+							`<option value="1" ${inst.m12==1?' selected':''}>Thanh</option>`+
+							`<option value="2" ${inst.m12==2?' selected':''}>Cung tròn</option>`+
+							`<option value="3" ${inst.m12==3?' selected':''}>Góc</option>`+
+							`<option value="4" ${inst.m12==4?' selected':''}>Quạt</option>`+
 						`</select></div>`+
 					`</div>`;
-		let blend = `<div class="lbl-l">Blend mode<br>`+
+		let blend = `<div class="lbl-l">Chế độ pha trộn<br>`+
 						`<div class="sel-p"><select class="sel-ple" id="seg${i}bm" onchange="setBm(${i})">`+
-							`<option value="0" ${inst.bm==0?' selected':''}>Top/Default</option>`+
-							`<option value="1" ${inst.bm==1?' selected':''}>Bottom/None</option>`+
-							`<option value="2" ${inst.bm==2?' selected':''}>Add</option>`+
-							`<option value="3" ${inst.bm==3?' selected':''}>Subtract</option>`+
-							`<option value="4" ${inst.bm==4?' selected':''}>Difference</option>`+
-							`<option value="5" ${inst.bm==5?' selected':''}>Average</option>`+
-							`<option value="6" ${inst.bm==6?' selected':''}>Multiply</option>`+
-							`<option value="7" ${inst.bm==7?' selected':''}>Divide</option>`+
-							`<option value="8" ${inst.bm==8?' selected':''}>Lighten</option>`+
-							`<option value="9" ${inst.bm==9?' selected':''}>Darken</option>`+
-							`<option value="10" ${inst.bm==10?' selected':''}>Screen</option>`+
-							`<option value="11" ${inst.bm==11?' selected':''}>Overlay</option>`+
-							`<option value="12" ${inst.bm==12?' selected':''}>Hard Light</option>`+
-							`<option value="13" ${inst.bm==13?' selected':''}>Soft Light</option>`+
-							`<option value="14" ${inst.bm==14?' selected':''}>Dodge</option>`+
-							`<option value="15" ${inst.bm==15?' selected':''}>Burn</option>`+
+							`<option value="0" ${inst.bm==0?' selected':''}>Trên/Mặc định</option>`+
+							`<option value="1" ${inst.bm==1?' selected':''}>Dưới/Không</option>`+
+							`<option value="2" ${inst.bm==2?' selected':''}>Cộng</option>`+
+							`<option value="3" ${inst.bm==3?' selected':''}>Trừ</option>`+
+							`<option value="4" ${inst.bm==4?' selected':''}>Hiệu số</option>`+
+							`<option value="5" ${inst.bm==5?' selected':''}>Trung bình</option>`+
+							`<option value="6" ${inst.bm==6?' selected':''}>Nhân</option>`+
+							`<option value="7" ${inst.bm==7?' selected':''}>Chia</option>`+
+							`<option value="8" ${inst.bm==8?' selected':''}>Sáng hơn</option>`+
+							`<option value="9" ${inst.bm==9?' selected':''}>Tối hơn</option>`+
+							`<option value="10" ${inst.bm==10?' selected':''}>Phối màn hình</option>`+
+							`<option value="11" ${inst.bm==11?' selected':''}>Chồng lớp</option>`+
+							`<option value="12" ${inst.bm==12?' selected':''}>Ánh sáng mạnh</option>`+
+							`<option value="13" ${inst.bm==13?' selected':''}>Ánh sáng mềm</option>`+
+							`<option value="14" ${inst.bm==14?' selected':''}>Làm sáng</option>`+
+							`<option value="15" ${inst.bm==15?' selected':''}>Làm tối</option>`+
 						`</select></div>`+
 					`</div>`;
 		let sndSim = `<div data-snd="si" class="lbl-s hide">Sound sim<br>`+
@@ -841,7 +836,7 @@ function populateSegments(s)
 				`</label>`+
 				`<div class="segname ${smpl}" onclick="selSegEx(${i})">`+
 					`<i class="icons e-icon frz" id="seg${i}frz" title="(un)Freeze" onclick="event.preventDefault();tglFreeze(${i});">&#x${inst.frz ? (li.live && li.liveseg==i?'e410':'e0e8') : 'e325'};</i>`+
-					(inst.n ? inst.n : "Segment "+i) +
+					(inst.n ? inst.n : "Phân đoạn "+i) +
 					`<div class="pop hide" onclick="event.preventDefault();event.stopPropagation();">`+
 						`<i class="icons g-icon" title="Set group" style="color:${cG};" onclick="this.nextElementSibling.classList.toggle('hide');">&#x278${String.fromCharCode(inst.set+"A".charCodeAt(0))};</i>`+
 						`<div class="pop-c hide"><span style="color:var(--c-f);" onclick="setGrp(${i},0);">&#x278A;</span><span style="color:var(--c-r);" onclick="setGrp(${i},1);">&#x278B;</span><span style="color:var(--c-g);" onclick="setGrp(${i},2);">&#x278C;</span><span style="color:var(--c-l);" onclick="setGrp(${i},3);">&#x278D;</span></div>`+
@@ -851,7 +846,7 @@ function populateSegments(s)
 				`<i class="icons e-icon flr ${smpl}" id="sege${i}" onclick="expand(${i})">&#xe395;</i>`+
 				(cfg.comp.segpwr ? segp : '') +
 				`<div class="segin ${smpl}" id="seg${i}in">`+
-					`<input type="text" class="ptxt" id="seg${i}t" autocomplete="off" maxlength=${li.arch=="esp8266"?32:64} value="${inst.n?inst.n:""}" placeholder="Enter name..."/>`+
+					`<input type="text" class="ptxt" id="seg${i}t" autocomplete="off" maxlength=${li.arch=="esp8266"?32:64} value="${inst.n?inst.n:""}" placeholder="Nhập tên..."/>`+
 					`<table class="infot segt">`+
 					`<tr>`+
 						`<td>${isMSeg?'Start X':'Start LED'}</td>`+
@@ -1122,10 +1117,10 @@ function populateNodes(i,n)
 			}
 		}
 	}
-	if (i.ndc < 0) cn += `Instance List is disabled.`;
-	else if (nnodes == 0) cn += `No other instances found.`;
+	if (i.ndc < 0) cn += `Danh sách bị vô hiệu hóa.`;
+	else if (nnodes == 0) cn += `Không tìm thấy thiết bị khác.`;
 	cn += `<table>
-	${inforow("Current instance:",i.name)}
+	${inforow("Thiết bị hiện tại:",i.name)}
 	${urows}
 	</table>`;
 	gId('kn').innerHTML = cn;
@@ -1137,7 +1132,7 @@ function loadNodes()
 		method: 'get'
 	})
 	.then((res)=>{
-		if (!res.ok) showToast('Could not load Node list!', true);
+		if (!res.ok) showToast('Không thể tải danh sách thiết bị!', true);
 		return res.json();
 	})
 	.then((json)=>{
@@ -1393,7 +1388,7 @@ function displayRover(i,s)
 {
 	gId('rover').style.transform = (i.live && s.lor == 0 && i.liveseg<0) ? "translateY(0px)":"translateY(100%)";
 	var sour = i.lip ? i.lip:""; if (sour.length > 2) sour = " from " + sour;
-	gId('lv').innerHTML = `WLED is receiving live ${i.lm} data${sour}`;
+	gId('lv').innerHTML = `ARGB HSL is receiving live ${i.lm} data${sour}`;
 	gId('roverstar').style.display = (i.live && s.lor) ? "block":"none";
 }
 
@@ -1485,7 +1480,7 @@ function readState(s,command=false)
 		} else if (isEmpty(i) && seg.id == s.mainseg) i = seg; // assign mainseg if no segments are selected
 	}
 	if (isEmpty(i)) {
-		showToast('No segments!', true);
+		showToast('Không có đoạn nào được chọn!', true);
 		updateUI();
 		return true;
 	} else if (i.id == s.mainseg) {
@@ -1520,34 +1515,34 @@ function readState(s,command=false)
 		var errstr = "";
 		switch (s.error) {
 			case  1:
-				errstr = "Denied!";
+				errstr = "Từ chối!";
 				break;
 			case  3:
-				errstr = "Buffer locked!";
+				errstr = "Không có bộ đệm!";
 				break;
 			case  7:
-				errstr = "No RAM for buffer!";
+				errstr = "Không đủ RAM cho bộ đệm!";
 				break;
 			case  8:
-				errstr = "Effect RAM depleted!";
+				errstr = "RAM hiệu ứng đã cạn kiệt!";
 				break;
 			case  9:
-				errstr = "JSON parsing error!";
+				errstr = "Lỗi phân tích JSON!";
 				break;
 			case 10:
-				errstr = "Could not mount filesystem!";
+				errstr = "Không thể gắn kết hệ thống tệp!";
 				break;
 			case 11:
-				errstr = "Not enough space to save preset!";
+				errstr = "Không đủ không gian để lưu preset!";
 				break;
 			case 12:
-				errstr = "Preset not found.";
+				errstr = "Không tìm thấy preset.";
 				break;
 			case 13:
-				errstr = "Missing ir.json.";
+				errstr = "Thiếu ir.json.";
 				break;
 			case 19:
-				errstr = "A filesystem error has occured.";
+				errstr = "Đã xảy ra lỗi hệ thống tệp.";
 				break;
 		}
 		showToast('Error ' + s.error + ": " + errstr, true);
@@ -1597,7 +1592,7 @@ function setEffectParameters(idx)
 		if ((!controlDefined && i<((idx<128)?2:nSliders)) || (slOnOff.length>i && slOnOff[i]!="")) {
 			if (slOnOff.length>i && slOnOff[i]!="!") text = slOnOff[i];
 			// restore overwritten default tooltips
-			if (i<2 && slOnOff[i]==="!") text = i==0 ? "Effect speed" : "Effect intensity";
+			if (i<2 && slOnOff[i]==="!") text = i==0 ? "Tốc độ hiệu ứng" : "Cường độ hiệu ứng";
 			slider.setAttribute("title", text);
 			slider.parentElement.classList.remove('hide');
 		} else
@@ -1671,7 +1666,7 @@ function setEffectParameters(idx)
 	var palw = gId("palw"); // wrapper
 	var pall = gId("pall");	// label
 	var icon = '<i class="icons sel-icon" onclick="tglHex()">&#xe2b3;</i> ';
-	var text = 'Color palette';
+	var text = 'Bảng màu';
 	// if not controlDefined or palette has a value
 	if (hasRGB && ((!controlDefined) || (paOnOff.length>0 && paOnOff[0]!="" && isNaN(paOnOff[0])))) {
 		palw.style.display = "inline-block";
@@ -1686,7 +1681,7 @@ function setEffectParameters(idx)
 		if (lastinfo.cpalcount>0) gId("rmPal").classList.remove("hide");
 	} else {
 		// disable palette list
-		text += ' not used';
+		text += ' không khả dụng';
 		palw.style.display = "none";
 		gId("adPal").classList.add("hide");
 		gId("rmPal").classList.add("hide");
@@ -1801,9 +1796,9 @@ function toggleNl()
 	nlA = !nlA;
 	if (nlA)
 	{
-		showToast(`Timer active. Your light will turn ${nlTar > 0 ? "on":"off"} ${nlMode ? "over":"after"} ${nlDur} minutes.`);
+		showToast(`Thời gian kích hoạt. Đèn của bạn sẽ ${nlTar > 0 ? "bật":"tắt"} ${nlMode ? "trong":"sau"} ${nlDur} phút.`);
 	} else {
-		showToast('Timer deactivated.');
+		showToast('Thời gian kích hoạt đã bị vô hiệu hóa.');
 	}
 	var obj = {"nl": {"on": nlA}};
 	requestJson(obj);
@@ -1812,8 +1807,8 @@ function toggleNl()
 function toggleSync()
 {
 	syncSend = !syncSend;
-	if (syncSend) showToast('Other lights in the network will now sync to this one.');
-	else showToast('This light and other lights in the network will no longer sync.');
+	if (syncSend) showToast('Các đèn khác trong mạng sẽ đồng bộ với đèn này.');
+	else showToast('Đèn này và các đèn khác trong mạng sẽ không còn đồng bộ nữa.');
 	var obj = {"udpn": {"send": syncSend}};
 	//if (syncTglRecv) obj.udpn.recv = syncSend;
 	requestJson(obj);
@@ -1880,7 +1875,7 @@ function makeSeg()
 	});
 	var cn = `<div class="seg lstI expanded">`+
 		`<div class="segin">`+
-			`<input class="ptxt show" type="text" id="seg${lu}t" autocomplete="off" maxlength=32 value="" placeholder="New segment ${lu}"/>`+
+			`<input class="ptxt show" type="text" id="seg${lu}t" autocomplete="off" maxlength=32 value="" placeholder="Phân đoạn mới ${lu}"/>`+
 			`<table class="segt">`+
 				`<tr>`+
 					`<td width="38%">${isM?'Start X':'Start LED'}</td>`+
@@ -1908,7 +1903,7 @@ function resetUtil(off=false)
 {
 	gId('segutil').innerHTML = `<div class="seg btn btn-s${off?' off':''}" style="padding:0;margin-bottom:12px;">`
 	+ '<label class="check schkl"><input type="checkbox" id="selall" onchange="selSegAll(this)"><span class="checkmark" title="Select all"></span></label>'
-	+ `<div class="segname" ${off?'':'onclick="makeSeg()"'}><i class="icons btn-icon">&#xe18a;</i>Add segment</div>`
+	+ `<div class="segname" ${off?'':'onclick="makeSeg()"'}><i class="icons btn-icon">&#xe18a;</i>Thêm phân đoạn</div>`
 	+ '<div class="pop hide" onclick="event.stopPropagation();">'
 	+ `<i class="icons g-icon" title="Select group" onclick="this.nextElementSibling.classList.toggle('hide');">&#xE34B;</i>`
 	+ '<div class="pop-c hide"><span style="color:var(--c-f);" onclick="selGrp(0);">&#x278A;</span><span style="color:var(--c-r);" onclick="selGrp(1);">&#x278B;</span><span style="color:var(--c-g);" onclick="selGrp(2);">&#x278C;</span><span style="color:var(--c-l);" onclick="selGrp(3);">&#x278D;</span></div>'
@@ -2041,24 +2036,24 @@ function makeP(i,pl)
 		const rep = plJson[i].repeat ? plJson[i].repeat : 0;
 		const man = plJson[i].dur == 0;
 		content =
-`<div id="ple${i}" style="margin-top:10px;"></div><label class="check revchkl">Shuffle
+`<div id="ple${i}" style="margin-top:10px;"></div><label class="check revchkl">Chơi lộn xộn các mục
 	<input type="checkbox" id="pl${i}rtgl" onchange="plR(${i})" ${plJson[i].r||rep<0?"checked":""}>
 	<span class="checkmark"></span>
 </label>
-<label class="check revchkl">Manual advance
+<label class="check revchkl">Thời lượng thủ công
 	<input type="checkbox" id="pl${i}manual" onchange="plM(${i})" ${man?"checked":""}>
 	<span class="checkmark"></span>
 </label>
-<label class="check revchkl">Repeat indefinitely
+<label class="check revchkl">Lặp vô hạn
 	<input type="checkbox" id="pl${i}rptgl" onchange="plR(${i})" ${rep>0?"":"checked"}>
 	<span class="checkmark"></span>
 </label>
 <div id="pl${i}o1" style="display:${rep>0?"block":"none"}">
-<div class="c">Repeat <input type="number" id="pl${i}rp" oninput="plR(${i})" max=127 min=0 value=${rep>0?rep:1}> times</div>
-<div class="sel">End preset:<br>
+<div class="c">Lặp lại <input type="number" id="pl${i}rp" oninput="plR(${i})" max=127 min=0 value=${rep>0?rep:1}> lần</div>
+<div class="sel">Kết thúc preset:<br>
 <div class="sel-p"><select class="sel-ple" id="pl${i}selEnd" onchange="plR(${i})" data-val=${plJson[i].end?plJson[i].end:0}>
 <option value="0">None</option>
-<option value="255" ${plJson[i].end && plJson[i].end==255?"selected":""}>Restore preset</option>
+<option value="255" ${plJson[i].end && plJson[i].end==255?"selected":""}>Khôi phục preset</option>
 ${makePlSel(i, plJson[i].end?plJson[i].end:0)}
 </select></div></div>
 </div>
@@ -2066,17 +2061,17 @@ ${makePlSel(i, plJson[i].end?plJson[i].end:0)}
 	} else {
 		content =
 `<label class="check revchkl">
-	<span class="lstIname">Include brightness</span>
+	<span class="lstIname">Bao gồm độ sáng</span>
 	<input type="checkbox" id="p${i}ibtgl" checked>
 	<span class="checkmark"></span>
 </label>
 <label class="check revchkl">
-	<span class="lstIname">Save segment bounds</span>
+	<span class="lstIname">Lưu giới hạn phân đoạn</span>
 	<input type="checkbox" id="p${i}sbtgl" checked>
 	<span class="checkmark"></span>
 </label>
 <label class="check revchkl">
-	<span class="lstIname">Checked segments only</span>
+	<span class="lstIname">Chỉ các phân đoạn đã chọn</span>
 	<input type="checkbox" id="p${i}sbchk">
 	<span class="checkmark"></span>
 </label>`;
@@ -2088,11 +2083,11 @@ ${makePlSel(i, plJson[i].end?plJson[i].end:0)}
 	}
 
 	return `<input type="text" class="ptxt ${i==0?'show':''}" id="p${i}txt" autocomplete="off" maxlength=32 value="${(i>0)?pName(i):""}" placeholder="Enter name..."/>
-<div class="c">Quick load label: <input type="text" class="stxt" maxlength=2 value="${qlName(i)}" id="p${i}ql" autocomplete="off"/></div>
-<div class="h">(leave empty for no Quick load button)</div>
+<div class="c">Nhãn tải nhanh: <input type="text" class="stxt" maxlength=2 value="${qlName(i)}" id="p${i}ql" autocomplete="off"/></div>
+<div class="h">(bỏ trống để không có nút tải nhanh)</div>
 <div ${pl&&i==0?"style='display:none'":""}>
 <label class="check revchkl">
-	<span class="lstIname">${pl?"Show playlist editor":(i>0)?"Overwrite with state":"Use current state"}</span>
+	<span class="lstIname">${pl?"Hiện chỉnh sửa danh sách phát":(i>0)?"Ghi đè bằng trạng thái":"Sử dụng trạng thái hiện tại"}</span>
 	<input type="checkbox" id="p${i}cstgl" onchange="tglCs(${i})" ${(i==0||pl)?"checked":""}>
 	<span class="checkmark"></span>
 </label>
@@ -2100,14 +2095,14 @@ ${makePlSel(i, plJson[i].end?plJson[i].end:0)}
 <div class="po2" id="p${i}o2">API command<br><textarea class="apitxt" id="p${i}api"></textarea></div>
 <div class="po1" id="p${i}o1">${content}</div>
 <label class="check revchkl">
-	<span class="lstIname">Apply at boot</span>
+	<span class="lstIname">Áp dụng khi khởi động</span>
 	<input type="checkbox" id="p${i}bps" ${i==bps?"checked":""}>
 	<span class="checkmark"></span>
 </label>
-<div class="c m6">Save to ID <input id="p${i}id" type="number" oninput="checkUsed(${i})" max=250 min=1 value=${(i>0)?i:getLowestUnusedP()}></div>
+<div class="c m6">Lưu vào ID <input id="p${i}id" type="number" oninput="checkUsed(${i})" max=250 min=1 value=${(i>0)?i:getLowestUnusedP()}></div>
 <div class="c">
-	<button class="btn btn-p" onclick="saveP(${i},${pl})"><i class="icons btn-icon">&#xe390;</i>Save</button>
-	${(i>0)?'<button class="btn btn-p" id="p'+i+'del" onclick="delP('+i+')"><i class="icons btn-icon">&#xe037;</i>Delete':'<button class="btn btn-p" onclick="resetPUtil()">Cancel'}</button>
+	<button class="btn btn-p" onclick="saveP(${i},${pl})"><i class="icons btn-icon">&#xe390;</i>Lưu</button>
+	${(i>0)?'<button class="btn btn-p" id="p'+i+'del" onclick="delP('+i+')"><i class="icons btn-icon">&#xe037;</i>Xóa':'<button class="btn btn-p" onclick="resetPUtil()">Hủy bỏ'}</button>
 </div>
 <div class="pwarn ${(i>0)?"bp":""} c" id="p${i}warn"></div>
 ${(i>0)? ('<div class="h">ID ' +i+ '</div>'):""}`;
@@ -2161,7 +2156,7 @@ function makePlEntry(p,i)
 function makePlUtil()
 {
 	if (pNum < 2) {
-		showToast("You need at least 2 presets to make a playlist!"); //return;
+		showToast("Bạn cần ít nhất 2 preset để tạo một playlist!"); //return;
 	}
 	let p = gId('putil');
 	p.classList.remove('staybot');
@@ -2303,7 +2298,7 @@ function setSeg(s)
 function delSeg(s)
 {
 	if (segCount < 2) {
-		showToast("You need to have multiple segments to delete one!");
+		showToast("Bạn không thể xóa tất cả các phân đoạn! Vui lòng giữ lại ít nhất một phân đoạn.", true);
 		return;
 	}
 	segCount--;
@@ -2498,7 +2493,7 @@ function saveP(i,pl)
 {
 	pI = parseInt(gId(`p${i}id`).value);
 	if (!pI || pI < 1) pI = (i>0) ? i : getLowestUnusedP();
-	if (pI > 250) {alert("Preset ID must be 250 or less."); return;}
+	if (pI > 250) {alert("Số preset phải nhỏ hơn hoặc bằng 250."); return;}
 	pN = gId(`p${i}txt`).value;
 	if (pN == "") pN = (pl?"Playlist ":"Preset ") + pI;
 	var obj = {};
@@ -2509,13 +2504,13 @@ function saveP(i,pl)
 		} catch (e) {
 			obj.win = raw;
 			if (raw.length < 2) {
-				gId(`p${i}warn`).innerHTML = "&#9888; Please enter your API command first";
+				gId(`p${i}warn`).innerHTML = "&#9888; Vui lòng nhập lệnh API của bạn trước";
 				return;
 			} else if (raw.indexOf('{') > -1) {
-				gId(`p${i}warn`).innerHTML = "&#9888; Syntax error in custom JSON API command";
+				gId(`p${i}warn`).innerHTML = "&#9888; Lỗi cú pháp trong lệnh API JSON tùy chỉnh";
 				return;
 			} else if (raw.indexOf("Please") == 0) {
-				gId(`p${i}warn`).innerHTML = "&#9888; Please refresh the page before modifying this preset";
+				gId(`p${i}warn`).innerHTML = "&#9888; Vui lòng làm mới trang trước khi chỉnh sửa preset này";
 				return;
 			}
 		}
@@ -2547,7 +2542,7 @@ function saveP(i,pl)
 		delete pJson[pI].v;
 		delete pJson[pI].time;
 	} else {
-		pJson[pI] = {"n":pN, "win":"Please refresh the page to see this newly saved command."};
+		pJson[pI] = {"n":pN, "win":"Vui lòng làm mới trang để xem lệnh đã lưu này."};
 		if (obj.win) pJson[pI].win = obj.win;
 		if (obj.ql)  pJson[pI].ql = obj.ql;
 	}
@@ -2783,7 +2778,7 @@ setInterval(()=>{
 	gId('heart').style.color = `hsl(${hc}, 100%, 50%)`;
 }, 910);
 
-function openGH() { window.open("https://github.com/wled/WLED/wiki"); }
+function openGH() { window.open("https://happysmartlight.com/"); }
 
 var cnfr = false;
 function cnfReset()
@@ -2808,7 +2803,7 @@ function rSegs()
 	}
 	cnfrS = false;
 	bt.style.color = "var(--c-f)";
-	bt.innerHTML = "Reset segments";
+	bt.innerHTML = "Reset phân đoạn";
 	var obj = {"seg":[{"start":0,"stop":ledCount,"sel":true}]};
 	if (isM) {
 		obj.seg[0].stop = mw;

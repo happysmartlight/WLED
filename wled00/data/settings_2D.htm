@@ -40,22 +40,22 @@
 		if (p.children.length >= maxPanels) return;
 		var pw = parseInt(d.Sf.PW.value);
 		var ph = parseInt(d.Sf.PH.value);
-		let b = `<div id="pnl${i}"><hr class="sml">Panel ${i}<br>
-1<sup>st</sup> LED: <select name="P${i}B" oninput="UI()">
-	<option value="0">Top</option>
-	<option value="1">Bottom</option>
+		let b = `<div id="pnl${i}"><hr class="sml">Bảng ${i}<br>
+LED đầu tiên: <select name="P${i}B" oninput="UI()">
+	<option value="0">Trên</option>
+	<option value="1">Dưới</option>
 </select><select name="P${i}R" oninput="UI()">
-	<option value="0">Left</option>
-	<option value="1">Right</option>
+	<option value="0">Trái</option>
+	<option value="1">Phải</option>
 </select><br>
-Orientation: <select name="P${i}V" oninput="UI()">
-	<option value="0">Horizontal</option>
-	<option value="1">Vertical</option>
+Hướng: <select name="P${i}V" oninput="UI()">
+	<option value="0">Ngang</option>
+	<option value="1">Dọc</option>
 </select><br>
-Serpentine: <input type="checkbox" name="P${i}S" oninput="UI()"><br>
-Dimensions (WxH): <input name="P${i}W" type="number" min="1" max="255" value="${pw}" oninput="UI()"> x <input name="P${i}H" type="number" min="1" max="255" value="${ph}" oninput="UI()"><br>
-Offset X: <input name="P${i}X" type="number" min="0" max="255" value="0" oninput="UI()">
-Y: <input name="P${i}Y" type="number" min="0" max="255" value="0" oninput="UI()"><br><i>(offset from top-left corner in # LEDs)</i>
+Dạng rắn rít: <input type="checkbox" name="P${i}S" oninput="UI()"><br>
+Kích thước (Rộng x Cao): <input name="P${i}W" type="number" min="1" max="255" value="${pw}" oninput="UI()"> x <input name="P${i}H" type="number" min="1" max="255" value="${ph}" oninput="UI()"><br>
+Dịch X: <input name="P${i}X" type="number" min="0" max="255" value="0" oninput="UI()">
+Y: <input name="P${i}Y" type="number" min="0" max="255" value="0" oninput="UI()"><br><i>(dịch từ góc trên bên trái theo số LED)</i>
 </div>`;
 		p.insertAdjacentHTML("beforeend", b);
 	}
@@ -243,52 +243,52 @@ Y: <input name="P${i}Y" type="number" min="0" max="255" value="0" oninput="UI()"
 <body onload="S()">
 	<form id="form_s" name="Sf" method="post">
 	<div class="toprow">
-		<div class="helpB"><button type="button" onclick="H('features/2D')">?</button></div>
+		<!-- <div class="helpB"><button type="button" onclick="H('features/2D')">?</button></div> -->
 		<button type="button" onclick="B()">Back</button><button type="button" onclick="fS()">Save</button><hr>
 	</div>
-	<h2>2D setup</h2>
-	Strip or panel:
+	<h2>Cài đặt 2D</h2>
+	Dải hoặc bảng:
 	<select id="somp" name="SOMP" onchange="resetPanels();addPanels();UI();" >
-		<option value="0">1D Strip</option>
-		<option value="1">2D Matrix</option>
+		<option value="0">Dải 1D</option>
+		<option value="1">Ma trận 2D</option>
 	</select><br>
 	<div id="mpdiv" style="display:none;">
 		<hr class="sml">
-		<h3>Matrix Generator <button type="button" id="expGen" onclick="expand(this,gId('mxGen'));">&gt;</button></h3>
+		<h3>Trình tạo Ma trận <button type="button" id="expGen" onclick="expand(this,gId('mxGen'));">&gt;</button></h3>
 		<div id="mxGen" style="display:none;">
-			Panel dimensions (WxH): <input name="PW" type="number" min="1" max="128" value="8"> x <input name="PH" type="number" min="1" max="128" value="8"><br>
-			Horizontal panels: <input name="MPH" type="number" min="1" max="8" value="1">
-			Vertical panels: <input name="MPV" type="number" min="1" max="8" value="1"><br>
-			1<sup>st</sup> panel: <select name="PB">
-				<option value="0">Top</option>
-				<option value="1">Bottom</option>
+			Kích thước bảng (Rộng x Cao): <input name="PW" type="number" min="1" max="128" value="8"> x <input name="PH" type="number" min="1" max="128" value="8"><br>
+			Số bảng ngang: <input name="MPH" type="number" min="1" max="8" value="1">
+			Số bảng dọc: <input name="MPV" type="number" min="1" max="8" value="1"><br>
+			Bảng đầu tiên: <select name="PB">
+				<option value="0">Trên</option>
+				<option value="1">Dưới</option>
 			</select><select name="PR">
-				<option value="0">Left</option>
-				<option value="1">Right</option>
+				<option value="0">Trái</option>
+				<option value="1">Phải</option>
 			</select><br>
-			Orientation: <select name="PV">
-				<option value="0">Horizontal</option>
-				<option value="1">Vertical</option>
+			Hướng: <select name="PV">
+				<option value="0">Ngang</option>
+				<option value="1">Dọc</option>
 			</select><br>
-			Serpentine: <input type="checkbox" name="PS"><br>
-			<i  class="warn">Pressing Populate will create LED panel layout with pre-arranged matrix.<br>Values above <i>will not</i> affect final layout.<br>
-				WARNING: You may need to update each panel parameters after they are generated.</i><br>
-			<button type="button" onclick="gen();expand(gId('expGen'),gId('mxGen'));">Populate</button>
+			Dạng rắn rít: <input type="checkbox" name="PS"><br>
+			<i  class="warn">Nhấn Tạo sẽ tạo bố cục bảng LED với ma trận được sắp xếp sẵn.<br>Các giá trị phía trên <i>không</i> ảnh hưởng đến bố cục cuối cùng.<br>
+				CẢNH BÁO: Bạn có thể cần cập nhật lại thông số từng bảng sau khi tạo.</i><br>
+			<button type="button" onclick="gen();expand(gId('expGen'),gId('mxGen'));">Tạo</button>
 		</div>
 		<hr class="sml">
-		<h3>Panel set-up</h3>
-		Number of panels: <input name="MPC" type="number" min="1" max="64" value="1" oninput="addPanels();UI();"><br>
-		<i>A matrix is made of 1 or more physical LED panels.<br>
-		Each panel can be of different size and/or have different LED orientation and/or starting point and/or layout.</i><br>
-		<h3>LED panel layout</h3>
+		<h3>Cài đặt bảng điều khiển</h3>
+		Số lượng bảng: <input name="MPC" type="number" min="1" max="64" value="1" oninput="addPanels();UI();"><br>
+		<i>Một ma trận được tạo thành từ 1 hoặc nhiều bảng LED vật lý.<br>
+		Mỗi bảng có thể có kích thước khác nhau và/hoặc có hướng LED khác nhau và/hoặc điểm bắt đầu khác nhau và/hoặc bố cục khác nhau.</i><br>
+		<h3>Bố cục bảng LED</h3>
 		<div id="panels">
 		</div>
 		<hr class="sml">
 		<div id="MD"></div>
 		<canvas id="canvas"></canvas>
-		<div id="json" >Gap file: <input type="file" name="data" accept=".json"><button type="button" class="sml" onclick="uploadFile(d.Sf.data,'/2d-gaps.json')">Upload</button></div>
-		<i>Note: Gap file is a <b>.json</b> file containing an array with number of elements equal to the matrix size.<br>
-			A value of -1 means that pixel at that position is missing, a value of 0 means never paint that pixel, and 1 means regular pixel.</i>
+		<div id="json" >Tệp Gap: <input type="file" name="data" accept=".json"><button type="button" class="sml" onclick="uploadFile(d.Sf.data,'/2d-gaps.json')">Tải lên</button></div>
+		<i>Lưu ý: Tệp Gap là tệp <b>.json</b> chứa một mảng với số phần tử bằng với kích thước ma trận.<br>
+			Giá trị -1 nghĩa là pixel tại vị trí đó bị thiếu, giá trị 0 nghĩa là không bao giờ vẽ pixel đó, và 1 nghĩa là pixel bình thường.</i>
 	</div>
 	<hr>
 	<button type="button" onclick="B()">Back</button><button type="button" onclick="fS()">Save</button>

@@ -28,7 +28,7 @@ class AutoSaveUsermod : public Usermod {
 
     bool firstLoop = true;
     bool initDone = false;
-    bool enabled = true;
+    bool enabled = false;
 
     // configurable parameters
     #ifdef AUTOSAVE_AFTER_SEC
@@ -73,7 +73,7 @@ class AutoSaveUsermod : public Usermod {
       char presetNameBuffer[PRESET_NAME_BUFFER_SIZE];
       updateLocalTime();
       sprintf_P(presetNameBuffer, 
-        PSTR("~ %02d-%02d %02d:%02d:%02d ~"),
+        PSTR("~HSL %02d-%02d %02d:%02d:%02d ~"),
         month(localTime), day(localTime),
         hour(localTime), minute(localTime), second(localTime));
       cacheInvalidate++;  // force reload of presets

@@ -716,7 +716,7 @@ void serveSettings(AsyncWebServerRequest* request, bool post) {
   //else if (url.indexOf("/edit")   >= 0) subPage = 10;
   else subPage = SUBPAGE_WELCOME;
 
-  bool pinRequired = !correctPIN && strlen(settingsPIN) > 0 && (subPage > (WLED_WIFI_CONFIGURED ? SUBPAGE_MENU : SUBPAGE_WIFI) && subPage < SUBPAGE_LOCK);
+  bool pinRequired = !correctPIN && strlen(settingsPIN) > 0 && (subPage >= SUBPAGE_WIFI && subPage < SUBPAGE_LOCK);
   if (pinRequired) {
     originalSubPage = subPage;
     subPage = SUBPAGE_PINREQ; // require PIN

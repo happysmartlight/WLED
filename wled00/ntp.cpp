@@ -13,30 +13,9 @@
 
 Timezone* tz;
 
-#define TZ_UTC                  0
+#define TZ_VIETNAM              0
 #define TZ_UK                   1
-#define TZ_EUROPE_CENTRAL       2
-#define TZ_EUROPE_EASTERN       3
-#define TZ_US_EASTERN           4
-#define TZ_US_CENTRAL           5
-#define TZ_US_MOUNTAIN          6
-#define TZ_US_ARIZONA           7
-#define TZ_US_PACIFIC           8
-#define TZ_CHINA                9
-#define TZ_JAPAN               10
-#define TZ_AUSTRALIA_EASTERN   11
-#define TZ_NEW_ZEALAND         12
-#define TZ_NORTH_KOREA         13
-#define TZ_INDIA               14
-#define TZ_SASKACHEWAN         15
-#define TZ_AUSTRALIA_NORTHERN  16
-#define TZ_AUSTRALIA_SOUTHERN  17
-#define TZ_HAWAII              18
-#define TZ_NOVOSIBIRSK         19
-#define TZ_ANCHORAGE           20
-#define TZ_MX_CENTRAL          21
-#define TZ_PAKISTAN            22
-#define TZ_BRASILIA            23
+
 
 #define TZ_COUNT               24
 #define TZ_INIT               255
@@ -45,102 +24,14 @@ byte tzCurrent = TZ_INIT; //uninitialized
 
 /* C++11 form -- static std::array<std::pair<TimeChangeRule, TimeChangeRule>, TZ_COUNT> TZ_TABLE PROGMEM = {{ */
 static const std::pair<TimeChangeRule, TimeChangeRule> TZ_TABLE[] PROGMEM = {
-    /* TZ_UTC */ {
-      {Last, Sun, Mar, 1, 0}, // UTC
-      {Last, Sun, Mar, 1, 0}  // Same
+    /* TZ_VIETNAM */ {
+      {0, 0, 0, 0, 420} ,     //ICT = UTC + 7 hours
+      {0, 0, 0, 0, 420}
     },
     /* TZ_UK */ {
       {Last, Sun, Mar, 1, 60},      //British Summer Time
       {Last, Sun, Oct, 2, 0}       //Standard Time
     },
-    /* TZ_EUROPE_CENTRAL */ {
-      {Last, Sun, Mar, 2, 120},     //Central European Summer Time
-      {Last, Sun, Oct, 3, 60}      //Central European Standard Time
-    },
-    /* TZ_EUROPE_EASTERN */ {
-      {Last, Sun, Mar, 3, 180},     //East European Summer Time
-      {Last, Sun, Oct, 4, 120}     //East European Standard Time
-    },
-    /* TZ_US_EASTERN */ {
-      {Second, Sun, Mar, 2, -240},  //EDT = UTC - 4 hours
-      {First,  Sun, Nov, 2, -300}  //EST = UTC - 5 hours
-    },
-    /* TZ_US_CENTRAL */ {
-      {Second, Sun, Mar, 2, -300},  //CDT = UTC - 5 hours
-      {First,  Sun, Nov, 2, -360}  //CST = UTC - 6 hours
-    },
-    /* TZ_US_MOUNTAIN */ {
-      {Second, Sun, Mar, 2, -360},  //MDT = UTC - 6 hours
-      {First,  Sun, Nov, 2, -420}  //MST = UTC - 7 hours
-    },
-    /* TZ_US_ARIZONA */ {
-      {First,  Sun, Nov, 2, -420},  //MST = UTC - 7 hours
-      {First,  Sun, Nov, 2, -420}  //MST = UTC - 7 hours
-    },
-    /* TZ_US_PACIFIC */ {
-      {Second, Sun, Mar, 2, -420},  //PDT = UTC - 7 hours
-      {First,  Sun, Nov, 2, -480}  //PST = UTC - 8 hours
-    },
-    /* TZ_CHINA */ {
-      {Last, Sun, Mar, 1, 480},     //CST = UTC + 8 hours
-      {Last, Sun, Mar, 1, 480}
-    },
-    /* TZ_JAPAN */ {
-      {Last, Sun, Mar, 1, 540},     //JST = UTC + 9 hours
-      {Last, Sun, Mar, 1, 540}
-    },
-    /* TZ_AUSTRALIA_EASTERN */ {
-      {First,  Sun, Oct, 2, 660},   //AEDT = UTC + 11 hours
-      {First,  Sun, Apr, 3, 600}   //AEST = UTC + 10 hours
-    },
-    /* TZ_NEW_ZEALAND */ {
-      {Last,   Sun, Sep, 2, 780},   //NZDT = UTC + 13 hours
-      {First,  Sun, Apr, 3, 720}   //NZST = UTC + 12 hours
-    },
-    /* TZ_NORTH_KOREA */ {
-      {Last, Sun, Mar, 1, 510},     //Pyongyang Time = UTC + 8.5 hours
-      {Last, Sun, Mar, 1, 510}
-    },
-    /* TZ_INDIA */ {
-      {Last, Sun, Mar, 1, 330},     //India Standard Time = UTC + 5.5 hours
-      {Last, Sun, Mar, 1, 330}
-    },
-    /* TZ_SASKACHEWAN */ {
-      {First,  Sun, Nov, 2, -360},  //CST = UTC - 6 hours
-      {First,  Sun, Nov, 2, -360}
-    },
-    /* TZ_AUSTRALIA_NORTHERN */ {
-      {First, Sun, Apr, 3, 570},   //ACST = UTC + 9.5 hours
-      {First, Sun, Apr, 3, 570}
-    },
-    /* TZ_AUSTRALIA_SOUTHERN */ {
-      {First, Sun, Oct, 2, 630},   //ACDT = UTC + 10.5 hours
-      {First, Sun, Apr, 3, 570}   //ACST = UTC + 9.5 hours
-    },
-    /* TZ_HAWAII */ {
-      {Last, Sun, Mar, 1, -600},   //HST =  UTC - 10 hours
-      {Last, Sun, Mar, 1, -600}
-    },
-    /* TZ_NOVOSIBIRSK */ {
-      {Last, Sun, Mar, 1, 420},     //CST = UTC + 7 hours
-      {Last, Sun, Mar, 1, 420}
-    },
-    /* TZ_ANCHORAGE */ {
-      {Second, Sun, Mar, 2, -480},  //AKDT = UTC - 8 hours
-      {First, Sun, Nov, 2, -540}   //AKST = UTC - 9 hours
-    },
-     /* TZ_MX_CENTRAL */ {
-      {First, Sun, Apr, 2, -360},  //CST = UTC - 6 hours
-      {First, Sun, Apr, 2, -360}
-    },
-    /* TZ_PAKISTAN */ {
-      {Last, Sun, Mar, 1, 300},     //Pakistan Standard Time = UTC + 5 hours
-      {Last, Sun, Mar, 1, 300}
-    },
-    /* TZ_BRASILIA */ {
-      {Last, Sun, Mar, 1, -180},    //Brasília Standard Time = UTC - 3 hours
-      {Last, Sun, Mar, 1, -180}
-    }
 };
 
 void updateTimezone() {
