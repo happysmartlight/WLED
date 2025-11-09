@@ -77,13 +77,13 @@
 					let p = d.rsvd.concat(d.um_p); // used pin array
 					d.Sf.querySelectorAll("select.pin").forEach((e)=>{if(e.value>-1)p.push(parseInt(e.value));}) // buttons, IR & relay
 					if (p.some((e)=>e==parseInt(LC.value))) {
-						alert(`Sorry, pins ${JSON.stringify(p)} can't be used.`);
+						alert(`Sorry, pins ${JSON.stringify(p)} không thể sử dụng.`);
 						LC.value="";
 						LC.focus();
 						ok = false;
 						return;
 					} else if (d.ro_gpio.some((e)=>e==parseInt(LC.value))) {
-						alert(`Sorry, pins ${JSON.stringify(d.ro_gpio)} are input only.`);
+						alert(`Sorry, pins ${JSON.stringify(d.ro_gpio)} chỉ có thể sử dụng làm đầu vào.`);
 						LC.value="";
 						LC.focus();
 						ok = false;
@@ -112,10 +112,10 @@
 			d.Sf.data.value = '';
 			e.preventDefault();
 			if (!pinsOK()) {e.stopPropagation();return false;} // Prevent form submission and contact with server
-			if (bquot > 200) {var msg = "Too many LEDs! Can't handle that!"; alert(msg); e.stopPropagation(); return false;}
+			if (bquot > 200) {var msg = "Quá nhiều LED! Không thể xử lý!"; alert(msg); e.stopPropagation(); return false;}
 			else {
-				if (bquot > 80) {var msg = "Memory usage is high, reboot recommended!\n\rSet transitions to 0 to save memory.";
-				if (bquot > 100) msg += "\n\rToo many LEDs for me to handle properly!"; if (maxM < 10000) msg += "\n\rConsider using an ESP32."; alert(msg);}
+				if (bquot > 80) {var msg = "Sử dụng bộ nhớ cao, khởi động lại được khuyến nghị!\n\rĐặt chuyển tiếp về 0 để tiết kiệm bộ nhớ.";
+				if (bquot > 100) msg += "\n\rQuá nhiều LED để tôi xử lý đúng cách!"; if (maxM < 10000) msg += "\n\rXem xét việc sử dụng ESP32."; alert(msg);}
 				if (!d.Sf.ABL.checked || d.Sf.PPL.checked) d.Sf.MA.value = 0; // submit 0 as ABL (PPL will handle it)
 				if (d.Sf.checkValidity()) {
 					d.Sf.querySelectorAll("#mLC select[name^=LT]").forEach((s)=>{s.disabled=false;}); // just in case
@@ -413,19 +413,19 @@
 			gId('dbar').style.background = `linear-gradient(90deg, ${bquot > 60 ? (bquot > 90 ? "red":"orange"):"#ccc"} 0 ${bquot}%, #444 ${bquot}% 100%)`;
 			gId('ledwarning').style.display = (maxLC > Math.min(maxPB,800) || bquot > 80) ? 'inline':'none';
 			gId('ledwarning').style.color = (maxLC > Math.max(maxPB,800) || bquot > 100) ? 'red':'orange';
-			gId('wreason').innerHTML = (bquot > 80) ? "80% of max LED memory" +(bquot>100 ? ` (<b>WARNING: using over ${maxM}B!</b>)` : "") : "800 LEDs per output";
-			// calculate power
+			gId('wreason').innerHTML = (bquot > 80) ? "80% bộ nhớ LED tối đa" +(bquot>100 ? ` (<b>CẢNH BÁO: đang sử dụng hơn ${maxM}B!</b>)` : "") : "800 LED cho mỗi đầu ra";
+			// tính công suất
 			gId('ampwarning').style.display = (parseInt(d.Sf.MA.value,10) > 7200) ? 'inline':'none';
 			var val = Math.ceil((100 + busMA)/500)/2;
 			val = (val > 5) ? Math.ceil(val) : val;
-			var s = "A power supply with total of ";
+			var s = "Yêu cầu bộ nguồn tổng cộng ";
 			s += val;
-			s += "A is required.";
+			s += " A.";
 			var val2 = Math.ceil((100 + busMA)/1500)/2;
 			val2 = (val2 > 5) ? Math.ceil(val2) : val2;
-			var s2 = "(for most effects, ~";
+			var s2 = "(đối với hầu hết hiệu ứng, khoảng ";
 			s2 += val2;
-			s2 += "A is enough)<br>";
+			s2 += " A là đủ)<br>";
 			gId('psu').innerHTML = s;
 			gId('psu2').innerHTML = s2;
 			gId("json").style.display = d.Sf.IT.value==8 ? "" : "none";
@@ -492,8 +492,8 @@ mA/LED: <select name="LAsel${s}" onchange="enLA(this,'${s}');UI();">
 <div id="dig${s}w" style="display:none">Swap: <select name="WO${s}"><option value="0">None</option><option value="1">W & B</option><option value="2">W & G</option><option value="3">W & R</option><option data-opt="CCT" value="4">WW & CW</option></select></div>
 <div id="dig${s}l" style="display:none">Clock: <select name="SP${s}"><option value="0">Slowest</option><option value="1">Slow</option><option value="2">Normal</option><option value="3">Fast</option><option value="4">Fastest</option></select></div>
 <div>
-<span id="psd${s}">Start:</span> <input type="number" name="LS${s}" id="ls${s}" class="l starts" min="0" max="8191" value="${lastEnd(i)}" oninput="startsDirty[${i}]=true;UI();" required />&nbsp;
-<div id="dig${s}c" style="display:inline">Length: <input type="number" name="LC${s}" class="l" min="1" max="${maxPB}" value="1" required oninput="UI()" /></div><br>
+<span id="psd${s}">Led bắt đầu:</span> <input type="number" name="LS${s}" id="ls${s}" class="l starts" min="0" max="8191" value="${lastEnd(i)}" oninput="startsDirty[${i}]=true;UI();" required />&nbsp;
+<div id="dig${s}c" style="display:inline">Số lượng LED: <input type="number" name="LC${s}" class="l" min="1" max="${maxPB}" value="1" required oninput="UI()" /></div><br>
 </div>
 <span id="p0d${s}">GPIO:</span><input type="number" name="L0${s}" required class="s" onchange="UI();pinUpd(this);"/>
 <span id="p1d${s}"></span><input type="number" name="L1${s}" class="s" onchange="UI();pinUpd(this);"/>
@@ -819,43 +819,43 @@ Swap: <select id="xw${s}" name="XW${s}">
 	<form id="form_s" name="Sf" method="post">
 		<div class="toprow">
 		<div class="helpB"><button type="button" onclick="H('features/settings/#led-settings')">?</button></div>
-		<button type="button" onclick="B()">Back</button><button type="submit">Save</button><hr>
+		<button type="button" onclick="B()">Quay lại</button><button type="submit">Lưu</button><hr>
 		</div>
-		<h2>LED &amp; Hardware setup</h2>
+		<h2>LED &amp; cài đặt phần cứng</h2>
 		Total LEDs: <span id="lc">?</span> <span id="pc"></span><br>
-		<i>Recommended power supply for brightest white:</i><br>
+		<i>Khuyến nghị nguồn điện cho Led trắng sáng nhất:</i><br>
 		<b><span id="psu">?</span></b><br>
 		<span id="psu2"><br></span>
 		<br>
-		Enable automatic brightness limiter: <input type="checkbox" name="ABL" onchange="enABL()"><br>
+		Kích hoạt giới hạn độ sáng tự động: <input type="checkbox" name="ABL" onchange="enABL()"><br>
 		<div id="abl">
-			<i>Automatically limits brightness to stay close to the limit.<br>
-				Keep at &lt;1A if powering LEDs directly from the ESP 5V pin!<br>
-				If using multiple outputs it is recommended to use per-output limiter.<br>
-				Analog (PWM) and virtual LEDs cannot use automatic brightness limiter.<br></i>
-			<div id="psuMA">Maximum PSU Current: <input name="MA" type="number" class="xl" min="250" max="65000" oninput="UI()" required> mA<br></div>
-			Use per-output limiter: <input type="checkbox" name="PPL" onchange="UI()"><br>
+			<i>Tự động giới hạn độ sáng để giữ gần với giới hạn.<br>
+				Nếu cấp nguồn LED trực tiếp từ chân 5V của ESP, hãy giữ thấp hơn 1A!<br>
+				Nếu sử dụng nhiều đầu ra, nên sử dụng bộ giới hạn theo đầu ra.<br>
+				Các LED tương tự (PWM) và ảo không thể sử dụng bộ giới hạn độ sáng tự động.<br></i>
+			<div id="psuMA">Dòng tối đa PSU: <input name="MA" type="number" class="xl" min="250" max="65000" oninput="UI()" required> mA<br></div>
+			Giới hạn theo đầu ra: <input type="checkbox" name="PPL" onchange="UI()"><br>
 			<div id="ppldis" style="display:none;">
-				<i>Make sure you enter correct value for each LED output.<br>
-				If using multiple outputs with only one PSU, distribute its power proportionally amongst outputs.</i><br>
+				<i>Hãy đảm bảo bạn nhập giá trị chính xác cho mỗi đầu ra LED.<br>
+				Nếu sử dụng nhiều đầu ra nhưng chỉ có một PSU, hãy phân bổ công suất của nó theo tỷ lệ cho các đầu ra.</i><br>
 			</div>
 			<div id="ampwarning" class="warn" style="display: none;">
-				&#9888; Your power supply provides high current.<br>
-				To improve the safety of your setup,<br>
-				please use thick cables,<br>
-				multiple power injection points and a fuse!<br>
+				&#9888; Nguồn của bạn cung cấp dòng điện cao.<br>
+				Để cải thiện độ an toàn cho thiết lập của bạn,<br>
+				vui lòng sử dụng cáp dày,<br>
+				nhiều điểm tiêm điện và một cầu chì!<br>
 			</div>
 		</div>
-		<h3>Hardware setup</h3>
-		<div id="mLC">LED outputs:</div>
+		<h3>Cài đặt phần cứng</h3>
+		<div id="mLC">Chọn loại Led:</div>
 		<hr class="sml">
 		<button type="button" id="+" onclick="addLEDs(1,false)">+</button>
 		<button type="button" id="-" onclick="addLEDs(-1,false)">-</button><br>
-		LED memory usage: <span id="m0">0</span> / <span id="m1">?</span> B<br>
+		Bộ nhớ LED: <span id="m0">0</span> / <span id="m1">?</span> B<br>
 		<div id="dbar" style="display:inline-block; width: 100px; height: 10px; border-radius: 20px;"></div><br>
 		<div id="ledwarning" class="warn" style="display: none;">
-			&#9888; You might run into stability or lag issues.<br>
-			Use less than <span id="wreason">800 LEDs per output</span> for the best experience!<br>
+			&#9888; Bạn có thể gặp phải vấn đề về độ ổn định hoặc độ trễ.<br>
+			Sử dụng ít hơn <span id="wreason">800 LEDs per output</span> cho trải nghiệm tốt nhất!<br>
 		</div>
 		<hr class="sml">
 		<div id="prl" class="hide">Use parallel I2S: <input type="checkbox" name="PR"><br></div>
@@ -893,27 +893,27 @@ Swap: <select id="xw${s}" name="XW${s}">
 		Invert <input type="checkbox" name="RM"> Open drain <input type="checkbox" name="RO"><br>
 		<hr class="sml">
 		<h3>Defaults</h3>
-		Turn LEDs on after power up/reset: <input type="checkbox" name="BO"><br>
-		Default brightness: <input name="CA" type="number" class="m" min="1" max="255" required> (1-255)<br><br>
-		Apply preset <input name="BP" type="number" class="m" min="0" max="250" required> at boot (0 uses values from above)<br><br>
-		Use Gamma correction for color: <input type="checkbox" name="GC"> (strongly recommended)<br>
-		Use Gamma correction for brightness: <input type="checkbox" name="GB"> (not recommended)<br>
-		Use Gamma value: <input name="GV" type="number" class="m" placeholder="2.8" min="1" max="3" step="0.1" required><br><br>
-		Brightness factor: <input name="BF" type="number" class="m" min="1" max="255" required> %
+		Bật LED sau khi cấp nguồn/khởi động lại: <input type="checkbox" name="BO"><br>
+		Độ sáng mặc định: <input name="CA" type="number" class="m" min="1" max="255" required> (1-255)<br><br>
+		Áp dụng cài đặt trước <input name="BP" type="number" class="m" min="0" max="250" required> khi khởi động (0 sử dụng giá trị từ trên)<br><br>
+		Sử dụng hiệu chỉnh Gamma cho màu sắc: <input type="checkbox" name="GC"> (rất được khuyến nghị)<br>
+		Sử dụng hiệu chỉnh Gamma cho độ sáng: <input type="checkbox" name="GB"> (không được khuyến nghị)<br>
+		Sử dụng giá trị Gamma: <input name="GV" type="number" class="m" placeholder="2.8" min="1" max="3" step="0.1" required><br><br>
+		Hệ số độ sáng: <input name="BF" type="number" class="m" min="1" max="255" required> %
 		<h3>Transitions</h3>
 		Default transition time: <input name="TD" type="number" class="xl" min="0" max="65500"> ms<br>
 		<i>Random Cycle</i> Palette Time: <input name="TP" type="number" class="m" min="1" max="255"> s<br>
 		<h3>Timed light</h3>
 		Default duration: <input name="TL" type="number" class="m" min="1" max="255" required> min<br>
 		Default target brightness: <input name="TB" type="number" class="m" min="0" max="255" required><br>
-		Mode:
+		Chế độ chuyển đổi thời gian:
 		<select name="TW">
 			<option value="0">Wait and set</option>
-			<option value="1">Fade</option>
-			<option value="2">Fade Color</option>
-			<option value="3">Sunrise</option>
+			<option value="1">Làm Mờ</option>
+			<option value="2">Làm Mờ Màu</option>
+			<option value="3">Bình Minh</option>
 		</select>
-		<h3>White management</h3>
+		<h3>Quản lý màu trắng</h3>
 		White Balance correction: <input type="checkbox" name="CCT"><br>
 		<div id="wc">
 			Global override for Auto-calculate white:<br>
@@ -943,11 +943,11 @@ Swap: <select id="xw${s}" name="XW${s}">
 		Target refresh rate: <input type="number" class="s" min="0" max="250" name="FR" oninput="UI()" required> FPS
 		<div id="fpsNone" class="warn" style="display: none;">&#9888; Unlimited FPS Mode is experimental &#9888;<br></div>
 		<div id="fpsHigh" class="warn" style="display: none;">&#9888; High FPS Mode is experimental.<br></div>
-		<div id="fpsWarn" class="warn" style="display: none;">Please <a class="lnk" href="sec#backup">backup</a> WLED configuration and presets first!<br></div>
+		<div id="fpsWarn" class="warn" style="display: none;">Vui lòng <a class="lnk" href="sec#backup">sao lưu</a> cấu hình và cài đặt ARGB HSL trước!<br></div>
 		<hr class="sml">
 		<div id="cfg">Config template: <input type="file" name="data2" accept=".json"><button type="button" class="sml" onclick="loadCfg(d.Sf.data2)">Apply</button><br></div>
 		<hr>
-		<button type="button" onclick="B()">Back</button><button type="submit">Save</button>
+		<button type="button" onclick="B()">Quay lại</button><button type="submit">Lưu</button>
 	</form>
 	<div id="toast"></div>
 </body>

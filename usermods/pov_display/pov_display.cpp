@@ -1,7 +1,7 @@
 #include "wled.h"
 #include "pov.h"
 
-static const char _data_FX_MODE_POV_IMAGE[] PROGMEM = "POV Image@!;;;;";
+static const char _data_FX_MODE_POV_IMAGE[] PROGMEM = "Poi HSL@!;;;;";
 
 static POV s_pov;
 

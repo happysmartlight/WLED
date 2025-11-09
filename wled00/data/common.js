@@ -1,8 +1,8 @@
 var d=document;
 var loc = false, locip, locproto = "http:";
 
-function H(pg="")   { window.open("https://kno.wled.ge/"+pg); }
-function GH()       { window.open("https://github.com/wled-dev/WLED"); }
+function H(pg="")   { window.open("https://happysmartlight.com/"+pg); }
+function GH()       { window.open("https://happysmartlight.com/"); }
 function gId(c)     { return d.getElementById(c); } // getElementById
 function cE(e)      { return d.createElement(e); } // createElement
 function gEBCN(c)   { return d.getElementsByClassName(c); } // getElementsByClassName
@@ -77,7 +77,7 @@ function getLoc() {
 		loc = true;
 		locip = localStorage.getItem('locIp');
 		if (!locip) {
-			locip = prompt("File Mode. Please enter WLED IP!");
+			locip = prompt("File Mode. Please enter ARGB IP!");
 			localStorage.setItem('locIp', locip);
 		}
 	} else {

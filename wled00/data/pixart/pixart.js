@@ -1,6 +1,6 @@
 //Start up code
 //if (window.location.protocol == "file:") {
-//  let locip = prompt("File Mode. Please enter WLED IP!");
+//  let locip = prompt("File Mode. Please enter ARGB IP!");
 //  gId('curlUrl').value = locip;
 //} else
 //
