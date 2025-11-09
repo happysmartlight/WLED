@@ -48,11 +48,11 @@
 <body onload="S()">
 <form id="form_s" name="Sf" method="post" onsubmit="GC()">
 <div class="toprow">
-<div class="helpB"><button type="button" onclick="H('interfaces/udp-notifier/')">?</button></div>
+<!-- <div class="helpB"><button type="button" onclick="H('interfaces/udp-notifier/')">?</button></div> -->
 <button type="button" onclick="B()">Quay lại</button><button type="submit">Lưu</button><hr>
 </div>
-<h2>Sync setup</h2>
-<h3>WLED Broadcast</h3>
+<h2>Cài đặt đồng bộ</h2>
+<h3>ARGB Broadcast</h3>
 UDP Port: <input name="UP" type="number" min="1" max="65535" class="d5" required><br>
 2nd Port: <input name="U2" type="number" min="1" max="65535" class="d5" required><br>
 <div id="NoESPNOW" class="hide">
@@ -122,12 +122,12 @@ Respect LED Maps: <input type="checkbox" name="RLM"><br><br>
 <i>Network DMX input</i><br>
 Type:
 <select name=DI onchange="SP(); adj();">
+<option value=6454 selected>Art-Net</option>
 <option value=5568>E1.31 (sACN)</option>
-<option value=6454>Art-Net</option>
-<option value=0 selected>Custom port</option>
+<option value=0>Custom port</option>
 </select><br>
 <div id=xp>Port: <input name="EP" type="number" min="1" max="65535" value="5568" class="d5" required><br></div>
-Multicast: <input type="checkbox" name="EM"><br>
+Multicast: <input type="checkbox" name="EM" checked><br>
 Start universe: <input name="EU" type="number" min="0" max="63999" required><br>
 <i>Reboot required.</i> Check out <a href="https://github.com/LedFx/LedFx" target="_blank">LedFx</a>!<br>
 Skip out-of-sequence packets: <input type="checkbox" name="ES"><br>
