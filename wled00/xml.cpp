@@ -42,7 +42,7 @@ void fillWLEDVersion(char *buf, size_t len)
 {
   if (!buf || len == 0) return;
 
-  snprintf_P(buf,len,PSTR("WLED %s (%d)<br>\\\"%s\\\"<br>(Processor: %s)"),
+  snprintf_P(buf,len,PSTR("ARGB %s (%d)<br>\\\"%s\\\"<br>(Processor: %s)"),
     versionString,
     VERSION,
     releaseString,

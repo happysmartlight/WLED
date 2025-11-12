@@ -113,10 +113,10 @@
 			var i = gId("wifi_entries").childNodes.length;
 			if (i >= maxNetworks) return;
 			var b = `<div id="net${i}"><hr class="sml">
-Tên mạng (SSID${i==0?", bỏ trống để không kết nối":""}):<br><input type="text" id="CS${i}" name="CS${i}" maxlength="32" value="${ssid}" ${i>0?"required":""}><br>
-Mật khẩu mạng:<br><input type="password" name="PW${i}" maxlength="64" value="${pass}"><br>
-BSSID (tùy chọn):<br><input type="text" id="BS${i}" name="BS${i}" maxlength="12" value="${bssid}"><br>
-Địa chỉ IP tĩnh (để trống 0.0.0.0 cho DHCP)${i==0?"<br>Cũng được sử dụng bởi Ethernet":""}:<br>
+Network name (SSID${i==0?", empty to not connect":""}):<br><input type="text" id="CS${i}" name="CS${i}" maxlength="32" value="${ssid}" ${i>0?"required":""}><br>
+Network password:<br><input type="password" name="PW${i}" maxlength="64" value="${pass}"><br>
+BSSID (optional):<br><input type="text" id="BS${i}" name="BS${i}" maxlength="12" value="${bssid}"><br>
+Static IP (leave at 0.0.0.0 for DHCP)${i==0?"<br>Also used by Ethernet":""}:<br>
 <input name="IP${i}0" type="number" class="s" min="0" max="255" value="${ip&0xFF}" required>.<input name="IP${i}1" type="number" class="s" min="0" max="255" value="${(ip>>8)&0xFF}" required>.<input name="IP${i}2" type="number" class="s" min="0" max="255" value="${(ip>>16)&0xFF}" required>.<input name="IP${i}3" type="number" class="s" min="0" max="255" value="${(ip>>24)&0xFF}" required><br>
 Static gateway:<br>
 <input name="GW${i}0" type="number" class="s" min="0" max="255" value="${gw&0xFF}" required>.<input name="GW${i}1" type="number" class="s" min="0" max="255" value="${(gw>>8)&0xFF}" required>.<input name="GW${i}2" type="number" class="s" min="0" max="255" value="${(gw>>16)&0xFF}" required>.<input name="GW${i}3" type="number" class="s" min="0" max="255" value="${(gw>>24)&0xFF}" required><br>
@@ -183,14 +183,14 @@ Static subnet mask:<br>
 <body onload="S()">
   <form id="form_s" name="Sf" method="post">
 		<div class="toprow">
-		<!-- <div class="helpB"><button type="button" onclick="H('features/settings/#wifi-settings')">?</button></div> -->
-		<button type="button" onclick="B()">Quay lại</button><button type="submit">Lưu & Kết nối</button><hr>
+		<div class="helpB"><button type="button" onclick="H('features/settings/#wifi-settings')">?</button></div>
+		<button type="button" onclick="B()">Back</button><button type="submit">Save & Connect</button><hr>
 		</div>
 		<h2>Cài đặt WiFi</h2>
 		<h3>Kết nối với mạng hiện có</h3>
-		<button type="button" id="scan" onclick="N()">Tìm WiFi</button><br>
+		<button type="button" id="scan" onclick="N()">Scan</button><br>
 		<div id="wifi">
-			Mạng không dây
+			Mạng không dây:<br>
 			<div id="wifi_entries"></div>
 			<hr class="sml">
 			<button type="button" id="wifi_add" onclick="addWiFi()">+</button>
@@ -202,24 +202,24 @@ Static subnet mask:<br>
 		mDNS address (leave empty for no mDNS):<br>
 		http:// <input type="text" name="CM" maxlength="32"> .local<br>
 		Client IP: <span class="sip"> Not connected </span> <br>
-		<h3>Cấu hình Access Point</h3>
+		<h3>Configure Access Point</h3>
 		AP SSID (leave empty for no AP):<br> <input type="text" name="AS" maxlength="32"><br>
 		Hide AP name: <input type="checkbox" name="AH"><br>
 		AP password (leave empty for open):<br> <input type="password" name="AP" maxlength="63" pattern="(.{8,63})|()" title="Empty or min. 8 characters"><br>
 		Access Point WiFi channel: <input name="AC" type="number" class="xs" min="1" max="13" required><br>
-		AP được bật khi:
+		AP opens:
 		<select name="AB">
-			<option value="0">Không có kết nối sau khi khởi động</option>
-			<option value="1">Mất kết nối</option>
-			<option value="2">Luôn bật</option>
-			<option value="3">Không bao giờ (không khuyến khích)</option>
-			<option value="4">Tạm thời (không có kết nối sau khi khởi động)</option>
+			<option value="0">No connection after boot</option>
+			<option value="1">Disconnected</option>
+			<option value="2">Always</option>
+			<option value="3">Never (not recommended)</option>
+			<option value="4">Temporary (no connection after boot)</option>
 		</select><br>
 		AP IP: <span class="sip"> Not active </span><br>
-		<h3>Nâng cao - hạn chế thay đổi</h3>
-		<!-- Force 802.11g mode (ESP8266 only): <input type="checkbox" name="FG"><br> -->
+		<h3>Experimental</h3>
+		Force 802.11g mode (ESP8266 only): <input type="checkbox" name="FG"><br>
 		Disable WiFi sleep: <input type="checkbox" name="WS"><br>
-		<i>Có thể giúp giải quyết các vấn đề kết nối và đồng bộ hóa âm thanh.<br>
+		<i>Can help with connectivity issues and Audioreactive sync.<br>
 		Disabling WiFi sleep increases power consumption.</i><br>
 		<div id="tx">TX power: <select name="TX">
 			<option value="78">19.5 dBm</option>
@@ -234,10 +234,10 @@ Static subnet mask:<br>
 			<option value="20">5 dBm</option>
 			<option value="8">2 dBm</option>
 		</select><br>
-		<i class="warn">Cảnh báo: Thay đổi công suất TX có thể làm cho thiết bị không thể truy cập.</i>
+		<i class="warn">WARNING: Modifying TX power may render device unreachable.</i>
 		</div>
 
-		<!-- <h3>ESP-NOW Wireless</h3>
+		<h3>ESP-NOW Wireless</h3>
 		<div id="NoESPNOW" class="hide">
 			<i class="warn">This firmware build does not include ESP-NOW support.<br></i>
 		</div>
@@ -252,9 +252,9 @@ Static subnet mask:<br>
 				<div id="rml">
 				</div>
 			</div>
-		</div> -->
+		</div>
 
-		<!-- <div id="ethd">
+		<div id="ethd">
 			<h3>Ethernet Type</h3>
 			<select name="ETH">
 				<option value="0">None</option>
@@ -271,9 +271,9 @@ Static subnet mask:<br>
 				<option value="3">WESP32</option>
 				<option value="1">WT32-ETH01</option>
 			</select><br><br>
-		</div> -->
+		</div>
 		<hr>
-		<button type="button" onclick="B()">Quay lại</button><button type="submit">Lưu & Kết nối</button>
+		<button type="button" onclick="B()">Back</button><button type="submit">Save & Connect</button>
 	</form>
 </body>
 </html>

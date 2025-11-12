@@ -1547,9 +1547,9 @@ dialog {
 	#info table .btn, #nodes table .btn {
 		width: 200px;
 	}
-	#info .ibtn, #nodes .ibtn {
+	/* #info .ibtn, #nodes .ibtn {
 		width: 145px;
-	}
+	} */
 	#info div, #nodes div, #nodes a.btn {
 		max-width: 320px;
 	}

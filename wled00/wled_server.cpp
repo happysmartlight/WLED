@@ -370,7 +370,7 @@ void initServer()
   });
 
   server.on(F("/reset"), HTTP_GET, [](AsyncWebServerRequest *request){
-    serveMessage(request, 200, FPSTR(s_rebooting), F("Please wait ~10 seconds."), 131);
+    serveMessage(request, 200, FPSTR(s_rebooting), F("Vui long cho khoang ~10 giay."), 131);
     doReboot = true;
   });
 
@@ -524,7 +524,7 @@ void initServer()
   });
 #else
   const auto notSupported = [](AsyncWebServerRequest *request){
-    serveMessage(request, 501, FPSTR(s_notimplemented), F("This build does not support OTA update."), 254);
+    serveMessage(request, 501, FPSTR(s_notimplemented), F("Phien ban khong ho tro cap nhat OTA."), 254);
   };
   server.on(_update, HTTP_GET, notSupported);
   server.on(_update, HTTP_POST, notSupported, [](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool isFinal){});
@@ -675,7 +675,7 @@ void serveSettingsJS(AsyncWebServerRequest* request)
     return;
   }
   if (subPage > 0 && !correctPIN && strlen(settingsPIN)>0) {
-    request->send_P(401, FPSTR(CONTENT_TYPE_JAVASCRIPT), PSTR("alert('PIN incorrect.');"));
+    request->send_P(401, FPSTR(CONTENT_TYPE_JAVASCRIPT), PSTR("alert('PIN khong chinh xac.');"));
     return;
   }
   
@@ -740,12 +740,12 @@ void serveSettings(AsyncWebServerRequest* request, bool post) {
     char s2[45] = "";
 
     switch (subPage) {
-      case SUBPAGE_WIFI   : strcpy_P(s, PSTR("WiFi")); strcpy_P(s2, PSTR("Please connect to the new IP (if changed)")); break;
+      case SUBPAGE_WIFI   : strcpy_P(s, PSTR("WiFi")); strcpy_P(s2, PSTR("Vui long ket noi den IP moi (neu thay doi)")); break;
       case SUBPAGE_LEDS   : strcpy_P(s, PSTR("LED")); break;
       case SUBPAGE_UI     : strcpy_P(s, PSTR("UI")); break;
       case SUBPAGE_SYNC   : strcpy_P(s, PSTR("Sync")); break;
       case SUBPAGE_TIME   : strcpy_P(s, PSTR("Time")); break;
-      case SUBPAGE_SEC    : strcpy_P(s, PSTR("Security")); if (doReboot) strcpy_P(s2, PSTR("Rebooting, please wait ~10 seconds...")); break;
+      case SUBPAGE_SEC    : strcpy_P(s, PSTR("Security")); if (doReboot) strcpy_P(s2, PSTR("Dang khoi dong lai, cho khoang ~10 giay...")); break;
 #ifdef WLED_ENABLE_DMX
       case SUBPAGE_DMX    : strcpy_P(s, PSTR("DMX")); break;
 #endif
@@ -753,7 +753,7 @@ void serveSettings(AsyncWebServerRequest* request, bool post) {
 #ifndef WLED_DISABLE_2D
       case SUBPAGE_2D     : strcpy_P(s, PSTR("2D")); break;
 #endif
-      case SUBPAGE_PINREQ : strcpy_P(s, correctPIN ? PSTR("PIN accepted") : PSTR("PIN rejected")); break;
+      case SUBPAGE_PINREQ : strcpy_P(s, correctPIN ? PSTR("Ma PIN chinh xac!") : PSTR("Ma PIN bi tu choi!")); break;
     }
 
     if (subPage != SUBPAGE_PINREQ) strcat_P(s, PSTR(" settings saved."));
