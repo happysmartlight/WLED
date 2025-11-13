@@ -118,13 +118,21 @@
 <div id="wrap" class="wrap">
   <div style="display: flex; justify-content: center;">
     <h1 style="display: flex; align-items: center;">
-      <svg style="width: 36px; height: 36px; margin-right: 6px;" viewBox="0 0 32 32">
-        <rect style="fill: #03F" x="6" y="22" width="8" height="4"/>
-        <rect style="fill: #03F" x="14" y="14" width="4" height="8"/>
-        <rect style="fill: #03F" x="18" y="10" width="4" height="8"/>
-        <rect style="fill: #03F" x="22" y="6" width="8" height="4"/>
+      <svg style="width: 120px; height: 20px; margin-right: 6px; border-radius: 4px;" viewBox="0 0 120 20">
+        <defs>
+          <linearGradient id="hslGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:hsl(0, 100%, 50%)"/>
+            <stop offset="16.6%" style="stop-color:hsl(60, 100%, 50%)"/>
+            <stop offset="33.3%" style="stop-color:hsl(120, 100%, 50%)"/>
+            <stop offset="50%" style="stop-color:hsl(180, 100%, 50%)"/>
+            <stop offset="66.6%" style="stop-color:hsl(240, 100%, 50%)"/>
+            <stop offset="83.3%" style="stop-color:hsl(300, 100%, 50%)"/>
+            <stop offset="100%" style="stop-color:hsl(360, 100%, 50%)"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="120" height="20" fill="url(#hslGradient)" stroke="#444" stroke-width="1" rx="3" ry="3"/>
       </svg>
-      <span id="head">WLED Palette Editor</span>
+      <span id="head">ARGB Palette Editor</span>
     </h1>
   </div>
 

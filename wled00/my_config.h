@@ -27,16 +27,69 @@
 #define SERVERNAME "ARGB" // HTTP server description
 #define WLED_PIN "1907"    // PIN for settings pages
 
+/*
+ * ================================================================
+ *  HAPPY SMART LIGHT – CODENAME COLLECTION
+ *  Dành cho các phiên bản firmware tùy chỉnh của bạn (ARGB/WLED)
+ * ================================================================
+ *
+ * | Codename   | Ý nghĩa / Phong cách                                                   | Gợi ý sử dụng                                      |
+ * |-------------|-----------------------------------------------------------------------|----------------------------------------------------|
+ * | AURORA      | "Cực quang" – Ánh sáng tự nhiên đầy màu sắc, giống hiệu ứng LED.     | Bản firmware chuyên về hiệu ứng màu động.          |
+ * | LUMINA      | Từ “Luminous” (ánh sáng rực rỡ), dễ đọc, hiện đại, sang trọng.       | Bản firmware tối ưu hiển thị hoặc công suất sáng.  |
+ * | NEONIX      | Phong cách công nghệ, ghép từ “Neon + Matrix”, nghe hiện đại.        | Dòng controller dành cho LED strip / LED matrix.   |
+ * | SPECTRA     | Nghĩa là “Quang phổ” – liên tưởng đến bảng màu RGB/HSL.              | Bản điều khiển palette hoặc màu thông minh.        |
+ * | FLARE       | “Tia lóe sáng” – biểu tượng cho tốc độ, gọn nhẹ và mạnh mẽ.          | Bản mini, tối ưu tốc độ và hiệu ứng đơn giản.      |
+ *
+ * Ví dụ sử dụng:
+ *   #define WLED_CODENAME "AURORA"
+ *   #define WLED_BRAND "Happy Smart Light"
+ *   #define WLED_PRODUCT_NAME "HSL Aurora Controller"
+ *
+ * ================================================================
+ */
+#define WLED_CODENAME "AURORA" 
+
 #define WLED_BRAND "ARGB"
 #define WLED_PRODUCT_NAME "ARGB HSL Controller"
+
+/*
+  * ================================================================
+  *  Mặc định WIFI AP
+  * ================================================================
+  *
+  * Thay đổi các cài đặt WIFI AP mặc định của bạn ở đây.
+  * Nếu bạn muốn sử dụng các cài đặt WIFI AP đã lưu trữ (được khuyến nghị), hãy để trống các định nghĩa này.
+  * Nếu bạn muốn sử dụng các cài đặt WIFI AP tùy chỉnh, hãy bỏ chú thích và thay đổi SSID và mật khẩu.
+  *
+  * Ví dụ sử dụng:
+  *   #define WLED_AP_SSID     "MyCustomAP"
+  *   #define WLED_AP_PASS     "MyCustomPass"
+  *
+  * ================================================================
+  */
 #define WLED_AP_SSID     "ARGB-AP"
 #define WLED_AP_PASS     "argb1234"
+
+/*
+  * ================================================================
+  *  Mặc định WIFI
+  * ================================================================
+  *
+  * Thay đổi các cài đặt WIFI mặc định của bạn ở đây.
+  * Nếu bạn muốn sử dụng các cài đặt WIFI đã lưu trữ (được khuyến nghị), hãy để trống các định nghĩa này.
+  * Nếu bạn muốn sử dụng các cài đặt WIFI tùy chỉnh, hãy bỏ chú thích và thay đổi SSID và mật khẩu.
+  *
+  * Ví dụ sử dụng:
+  *   #define CLIENT_SSID "OLIVE BERRY 2.4G"
+  *   #define CLIENT_PASS "zxcvbnm@123"
+  *
+  * ================================================================
+  */  
+#define CLIENT_SSID "OLIVE BERRY 2.4G" // Your WIFI SSID
+#define CLIENT_PASS "zxcvbnm@123" // Your WIFI password
 
 #define WLED_OTA_PASS    "argbota"
 
 #define WLED_VERSION 2.0_HSL_IPEX
-
-#define CLIENT_SSID "OLIVE BERRY 2.4G" // Your WIFI SSID
-#define CLIENT_PASS "zxcvbnm@123" // Your WIFI password
-
 #define WLED_MAX_BUTTONS 1   // Maximum number of buttons (2 on ESP32, 4 on other boards by default)
