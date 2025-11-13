@@ -2786,7 +2786,7 @@ function cnfReset()
 	if (!cnfr) {
 		var bt = gId('resetbtn');
 		bt.style.color = "var(--c-r)";
-		bt.innerHTML = "Confirm Reboot";
+		bt.innerHTML = "Xác nhận Reboot";
 		cnfr = true; return;
 	}
 	window.location.href = getURL("/reset");
@@ -2798,7 +2798,7 @@ function rSegs()
 	var bt = gId('rsbtn');
 	if (!cnfrS) {
 		bt.style.color = "var(--c-r)";
-		bt.innerHTML = "Confirm reset";
+		bt.innerHTML = "Xác nhận reset";
 		cnfrS = true; return;
 	}
 	cnfrS = false;
