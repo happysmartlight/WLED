@@ -16,13 +16,12 @@ var simplifiedUI = false;
 var tr = 7;
 var d = document;
 const ranges = RangeTouch.setup('input[type="range"]', {});
-var retry = 0;
 var palettesData;
 var fxdata = [];
 var pJson = {}, eJson = {}, lJson = {};
 var plJson = {}; // array of playlists
 var pN = "", pI = 0, pNum = 0;
-var pmt = 1, pmtLS = 0, pmtLast = 0;
+var pmt = 1, pmtLS = 0;
 var lastinfo = {};
 var isM = false, mw = 0, mh=0;
 var ws, wsRpt=0;
@@ -283,9 +282,10 @@ function onLoad()
 			await loadFXData();          // loads fx data
 			await loadFX();              // populates effect list
 			await loadPalettesData();    // fills palettesData[] for previews
-			await requestJson();         // fills lastinfo.cpalcount (safe now, pallist exists)
+			await requestJson();         // updates info variables
 			populatePalettes();          // repopulate with custom palettes now that cpalcount is known
-			await loadPresets();         // load presets last
+			if(pmt == pmtLS) populatePresets(true); // load presets from localStorage if signature matches (i.e. no device reboot)
+			else await loadPresets();    // load presets
 			if (cfg.comp.css) await loadSkinCSS('skinCss');
 			if (!ws) makeWS();
 		} catch(e) {
@@ -482,23 +482,12 @@ function restore(txt) {
 	return false;
 }
 
-async function loadPresets(callback = null) {
-	// check if already loaded
-	if (pmt == pmtLS && pmt > 0) {
-		// we have a copy of the presets in local storage and don't need to fetch another one
-		populatePresets(true);
-		pmtLast = pmt;
-		return;
-	}
-	// afterwards
-	if (pmt == pmtLast) return;
-
+async function loadPresets() {
 	return new Promise((resolve) => {
 		fetch(getURL('/presets.json'), {method: 'get'})
 		.then(res => res.status=="404" ? {"0":{}} : res.json())
 		.then(json => {
 			pJson = json;
-			pmtLast = pmt;
 			populatePresets();
 			resolve();
 		})
@@ -509,21 +498,18 @@ async function loadPresets(callback = null) {
 	});
 }
 
-async function loadPalettes() {
-	// Just wrap existing code in Promise
+async function loadPalettes(retry=0) {
 	return new Promise((resolve) => {
 		fetch(getURL('/json/palettes'), {method: 'get'})
 		.then(res => res.ok ? res.json() : Promise.reject())
 		.then(json => {
 			lJson = Object.entries(json);
 			populatePalettes();
-			retry = 0;
 			resolve();
 		})
 		.catch((e) => {
 			if (retry<5) {
-				retry++;
-				setTimeout(() => loadPalettes().then(resolve), 100);
+				setTimeout(() => loadPalettes(retry+1).then(resolve), 100);
 			} else {
 				showToast(e, true);
 				resolve();
@@ -532,20 +518,18 @@ async function loadPalettes() {
 	});
 }
 
-async function loadFX() {
+async function loadFX(retry=0) {
 	return new Promise((resolve) => {
 		fetch(getURL('/json/effects'), {method: 'get'})
 		.then(res => res.ok ? res.json() : Promise.reject())
 		.then(json => {
 			eJson = Object.entries(json);
 			populateEffects();
-			retry = 0;
 			resolve();
 		})
 		.catch((e) => {
 			if (retry<5) {
-				retry++;
-				setTimeout(() => loadFX().then(resolve), 100);
+				setTimeout(() => loadFX(retry+1).then(resolve), 100);
 			} else {
 				showToast(e, true);
 				resolve();
@@ -554,7 +538,7 @@ async function loadFX() {
 	});
 }
 
-async function loadFXData() {
+async function loadFXData(retry=0) {
 	return new Promise((resolve) => {
 		fetch(getURL('/json/fxdata'), {method: 'get'})
 		.then(res => res.ok ? res.json() : Promise.reject())
@@ -562,14 +546,12 @@ async function loadFXData() {
 			fxdata = json||[];
 			fxdata.shift();
 			fxdata.unshift(";!;");
-			retry = 0;
 			resolve();
 		})
 		.catch((e) => {
 			fxdata = [];
 			if (retry<5) {
-				retry++;
-				setTimeout(() => loadFXData().then(resolve), 100);
+				setTimeout(() => loadFXData(retry+1).then(resolve), 100);
 			} else {
 				showToast(e, true);
 				resolve();
@@ -593,10 +575,14 @@ function populateQL()
 	gId('pql').innerHTML = cn;
 }
 
-function populatePresets(fromls)
+async function populatePresets(fromls)
 {
 	if (fromls) pJson = JSON.parse(localStorage.getItem("wledP"));
-	if (!pJson) {setTimeout(loadPresets,250); return;}
+	if (!pJson) {
+		await loadPresets(); 
+		if (!pJson) pJson = {}; // prevent infinite recursion if loadPresets fails
+		return;
+	}
 	delete pJson["0"];
 	var cn = "";
 	var arr = Object.entries(pJson).sort(cmpP);
@@ -1680,12 +1666,12 @@ function setEffectParameters(idx)
 
 var jsonTimeout;
 var reqsLegal = false;
-async function requestJson(command=null) {
+async function requestJson(command=null, retry=0) {
 	return new Promise((resolve, reject) => {
 		gId('connind').style.backgroundColor = "var(--c-y)";
 		if (command && !reqsLegal) {resolve(); return;}
 		if (!jsonTimeout) jsonTimeout = setTimeout(()=>{if (ws) ws.close(); ws=null; showErrorToast()}, 3000);
-		
+
 		var useWs = (ws && ws.readyState === WebSocket.OPEN);
 		var req = null;
 		if (command) {
@@ -1731,24 +1717,12 @@ async function requestJson(command=null) {
 			var s = json.state ? json.state : json;
 			readState(s);
 
-			// Load presets and open websocket sequentially
-			if (!pJson || isEmpty(pJson)) {
-				setTimeout(()=>{
-					loadPresets(()=>{
-						wsRpt = 0;
-						if (!(ws && ws.readyState === WebSocket.OPEN)) makeWS();
-					});
-				}, 25);
-			}
-
 			reqsLegal = true;
-			retry = 0;
 			resolve();
 		})
 		.catch((e)=>{
 			if (retry<10) {
-				retry++;
-				setTimeout(() => requestJson(command).then(resolve).catch(reject), 100);
+				setTimeout(() => requestJson(command,retry+1).then(resolve).catch(reject), 100);
 			} else {
 				showToast(e, true);
 				resolve();
@@ -2528,7 +2502,7 @@ function saveP(i,pl)
 	}
 	populatePresets();
 	resetPUtil();
-	setTimeout(()=>{pmtLast=0; loadPresets();}, 750); // force reloading of presets
+	setTimeout(()=>{loadPresets();}, 750); // force reloading of presets
 }
 
 function testPl(i,bt) {
@@ -2797,12 +2771,11 @@ function rSegs()
 function loadPalettesData() {
 	return new Promise((resolve) => {
 		if (palettesData) return resolve(); // already loaded
-		const lsKey = "wledPalx";
-		var lsPalData = localStorage.getItem(lsKey);
+		var lsPalData = localStorage.getItem("wledPalx");
 		if (lsPalData) {
 			try {
 				var d = JSON.parse(lsPalData);
-				if (d && d.vid == d.vid) {
+				if (d && d.vid == lastinfo.vid) {
 					palettesData = d.p;
 					return resolve();
 				}
@@ -2811,7 +2784,7 @@ function loadPalettesData() {
 
 		palettesData = {};
 		getPalettesData(0, () => {
-			localStorage.setItem(lsKey, JSON.stringify({
+			localStorage.setItem("wledPalx", JSON.stringify({
 				p: palettesData,
 				vid: lastinfo.vid
 			}));
@@ -2819,21 +2792,19 @@ function loadPalettesData() {
 			setTimeout(resolve, 99); // delay optional
 		});
 	});
-	}
+}
 
-function getPalettesData(page, callback) {
+function getPalettesData(page, callback, retry=0) {
 	fetch(getURL(`/json/palx?page=${page}`), {method: 'get'})
 	.then(res => res.ok ? res.json() : Promise.reject())
 	.then(json => {
-		retry = 0;
 		palettesData = Object.assign({}, palettesData, json.p);
 		if (page < json.m) setTimeout(()=>{ getPalettesData(page + 1, callback); }, 75);
 		else callback();
 	})
 	.catch((error)=>{
 		if (retry<5) {
-			retry++;
-			setTimeout(()=>{getPalettesData(page,callback);}, 100);
+			setTimeout(()=>{getPalettesData(page,callback,retry+1);}, 100);
 		} else {
 			showToast(error, true);
 			callback();
